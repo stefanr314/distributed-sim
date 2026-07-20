@@ -1,0 +1,15 @@
+target/
+**/target/
+
+# ---Intellij --- 
+.idea/
+out/
+*.iml 
+*.iws
+
+# --- temps ---
+*.log 
+.DS_Store
+.crash
+
+
