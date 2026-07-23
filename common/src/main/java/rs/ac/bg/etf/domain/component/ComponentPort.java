@@ -1,66 +1,87 @@
 package rs.ac.bg.etf.domain.component;
 
+import rs.ac.bg.etf.domain.exceptions.InvalidNumberOfPorts;
 import rs.ac.bg.etf.domain.exceptions.PortIndexOutOfBound;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
-public final class ComponentPort {
+/**
+ * Class servers as holder of component's port and it's effectively immutable. No implementations of neither the
+ * {@code equals()} nor the {@code hashCode()} methods since there is no need for "logical equality" of component's
+ * ports e.g. x.equlas(y) if and only if x == y.
+ *
+ * @param <V> placeholder of port's value
+ * @author stefanr
+ * @since 1.0
+ */
+public class ComponentPort<V> {
 	private final int numberOfPorts;
-	private final int[] port;
-	private final int hash;
+	private final List<ComponentPortValue<V>> portValues;
 
-	// FIXME: not thread safe
 	private ComponentPort(int numberOfPorts) {
 		this.numberOfPorts = numberOfPorts;
-		this.port = new int[numberOfPorts];
-		this.hash = Integer.hashCode(numberOfPorts);
 
-		for (int i = 0; i < numberOfPorts; i++) {
-			port[i] = i;
-		}
+		this.portValues = initPortValues(numberOfPorts);
 	}
 
-	public static ComponentPort fromNumber(int numberOfPorts) {
-		// FIXME: throw appropriate domain exception
-		if (numberOfPorts < 1) throw new AssertionError();
+	public static <V> ComponentPort<V> fromNumber(int numberOfPorts) {
+		if (numberOfPorts < 1) throw new InvalidNumberOfPorts();
 
-		return new ComponentPort(numberOfPorts);
+		return new ComponentPort<>(numberOfPorts);
 	}
 
-	public static ComponentPort singlePort() {
-		return new ComponentPort(1);
+	public static <V> ComponentPort<V> singlePort() {
+		return new ComponentPort<>(1);
 	}
+
+	public void setValueAtPort(V value, int atPort) {
+		checkPortIndexInBound(atPort);
+
+		portValues.set(atPort, ComponentPortValue.fromValueAtPort(value, atPort));
+	}
+
 
 	public int numberOfPorts() {
 		return this.numberOfPorts;
 	}
 
-	public int portAt(int index) {
-		// guard clause
-		if (index > this.numberOfPorts || index < 0) throw new PortIndexOutOfBound();
+	public boolean valueSetAtPort(int atPort) {
+		checkPortIndexInBound(atPort);
 
-		return this.port[index];
+		return portValues.get(atPort).valueSet();
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (o == this) return true;
+	public Optional<V> valueAtPort(int atPort) {
+		checkPortIndexInBound(atPort);
 
-		if (!(o instanceof ComponentPort that)) return false;
-
-		return numberOfPorts == that.numberOfPorts;
+		return portValues.get(atPort).value();
 	}
 
-	@Override
-	public int hashCode() {
-		return hash;
+	public boolean allPortValuesSet() {
+		return portValues.stream().allMatch(ComponentPortValue::valueSet);
 	}
 
 	@Override
 	public String toString() {
 		return "ComponentPort{" +
 				"numberOfPorts=" + numberOfPorts +
-				", port=" + Arrays.toString(port) +
+				", portValues=" + portValues +
 				'}';
+	}
+
+	private void checkPortIndexInBound(int atPort) {
+		if (atPort < 0 || atPort >= numberOfPorts) throw new PortIndexOutOfBound();
+	}
+
+	private List<ComponentPortValue<V>> initPortValues(int numberOfPorts) {
+		List<ComponentPortValue<V>> list = new ArrayList<>();
+
+		for (int i = 0; i < numberOfPorts; i++) {
+			list.add(ComponentPortValue.initValueAtPort(i));
+		}
+
+		return list;
 	}
 }

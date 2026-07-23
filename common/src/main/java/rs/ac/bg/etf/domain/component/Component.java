@@ -2,30 +2,36 @@ package rs.ac.bg.etf.domain.component;
 
 import java.util.Objects;
 
+/**
+ * Value here depicts current value produced by the Component in discrete moment t. This value is meant to change
+ * with time.
+ *
+ * @param <V>
+ *
+ */
 public abstract class Component<V> {
 	private final ComponentId componentId;
-	private final ComponentPort inputPort;
-	private final ComponentPort outputPort;
+	private final ComponentPort<V> inputPort;
+	private final ComponentPort<V> outputPort;
 	private final long delay;
 	private final V value;
 
 
-	protected Component(ComponentId componentId, ComponentPort inputPort, ComponentPort outputPort, long delay,
+	protected Component(ComponentId componentId, ComponentPort<V> inputPort, ComponentPort<V> outputPort, long delay,
 	                    V value) {
+		if (delay < 0) throw new AssertionError("Delay value has to be greater then zero");
+
 		this.componentId = componentId;
 		this.inputPort = Objects.requireNonNull(inputPort);
 		this.outputPort = Objects.requireNonNull(outputPort);
 
 		this.delay = delay;
-		this.value = value;
+		this.value = Objects.requireNonNull(value);
 	}
 
-	// TODO: implement me
-	// once uve written the equals method ask yourself questions: is it symmetric, is it transitive, is it consistent???
 	@Override
 	public boolean equals(Object o) {
 		if (o == this) return true;
-		if (o == null) return false; // instanceof does take care of this whatsoever 
 
 		if (o instanceof Component<?> that) {
 			return this.componentId.equals(that.componentId);
@@ -36,19 +42,23 @@ public abstract class Component<V> {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(componentId, inputPort, outputPort, delay, value);
+		return Objects.hash(componentId);
 	}
 
 	public ComponentId componentId() {
 		return componentId;
 	}
 
-	public ComponentPort inputPort() {
+	public ComponentPort<V> inputPort() {
 		return inputPort;
 	}
 
-	public ComponentPort outputPort() {
+	public ComponentPort<V> outputPort() {
 		return outputPort;
+	}
+
+	public V getState() {
+		return value;
 	}
 
 	@Override
@@ -71,6 +81,6 @@ public abstract class Component<V> {
 	}
 
 
-//	public abstract List<Event<V>> execute(Event<V> msg);
-	// TODO: implement rollback logic???
+	//	public abstract List<Event<V>> execute(Event<V> msg);
+	public abstract Component<V> withValue(V newValue);
 }
