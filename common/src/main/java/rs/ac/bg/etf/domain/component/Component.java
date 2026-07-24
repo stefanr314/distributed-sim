@@ -1,5 +1,9 @@
 package rs.ac.bg.etf.domain.component;
 
+import rs.ac.bg.etf.domain.event.Event;
+import rs.ac.bg.etf.domain.exceptions.DelayNegativeException;
+
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -10,6 +14,7 @@ import java.util.Objects;
  *
  */
 public abstract class Component<V> {
+	//TODO: implement outward connections
 	private final ComponentId componentId;
 	private final ComponentPort<V> inputPort;
 	private final ComponentPort<V> outputPort;
@@ -19,7 +24,7 @@ public abstract class Component<V> {
 
 	protected Component(ComponentId componentId, ComponentPort<V> inputPort, ComponentPort<V> outputPort, long delay,
 	                    V value) {
-		if (delay < 0) throw new AssertionError("Delay value has to be greater then zero");
+		if (delay < 0) throw new DelayNegativeException();
 
 		this.componentId = componentId;
 		this.inputPort = Objects.requireNonNull(inputPort);
@@ -81,6 +86,7 @@ public abstract class Component<V> {
 	}
 
 
-	//	public abstract List<Event<V>> execute(Event<V> msg);
+	public abstract List<Event<V>> execute(Event<V> msg);
+
 	public abstract Component<V> withValue(V newValue);
 }

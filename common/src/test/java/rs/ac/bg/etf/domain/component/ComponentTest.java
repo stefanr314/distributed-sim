@@ -1,7 +1,12 @@
 package rs.ac.bg.etf.domain.component;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import rs.ac.bg.etf.domain.event.Event;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class ComponentTest {
 
@@ -10,8 +15,8 @@ public class ComponentTest {
 		// arrange
 		ComponentId cid1 = new ComponentId("C1");
 		ComponentId cid2 = new ComponentId("C2");
-		ComponentPort in = ComponentPort.fromNumber(2);
-		ComponentPort out = ComponentPort.singlePort();
+		ComponentPort<Boolean> in = ComponentPort.fromNumber(2);
+		ComponentPort<Boolean> out = ComponentPort.singlePort();
 
 		Component<Boolean> andGate = new LogicalComponent(cid1, in, out, 2, true);
 		Component<Boolean> orGate = new LogicalComponent(cid2, in, out, 2, true);
@@ -19,25 +24,31 @@ public class ComponentTest {
 		Component<Boolean> andGate3 = new LogicalComponent(cid1, in, out, 2, true);
 
 		// assert
-		Assert.assertNotEquals(andGate, orGate);
-		Assert.assertNotEquals(orGate, andGate);
+		assertThat(andGate).isNotEqualTo(orGate);
+		assertThat(orGate).isNotEqualTo(andGate);
 
 		// symmetry
-		Assert.assertEquals(andGate, andGate2);
-		Assert.assertEquals(andGate2, andGate);
+		assertThat(andGate).isEqualTo(andGate2);
+		assertThat(andGate2).isEqualTo(andGate);
 
 		// transitive
-		Assert.assertEquals(andGate, andGate2);
-		Assert.assertEquals(andGate2, andGate3);
-		Assert.assertEquals(andGate, andGate3);
+		assertThat(andGate).isEqualTo(andGate2);
+		assertThat(andGate2).isEqualTo(andGate3);
+		assertThat(andGate).isEqualTo(andGate3);
 
 	}
 
 	private static class LogicalComponent extends Component<Boolean> {
 
-		protected LogicalComponent(ComponentId componentId, ComponentPort inputPort, ComponentPort outputPort,
+		protected LogicalComponent(ComponentId componentId, ComponentPort<Boolean> inputPort,
+		                           ComponentPort<Boolean> outputPort,
 		                           long delay, boolean value) {
 			super(componentId, inputPort, outputPort, delay, value);
+		}
+
+		@Override
+		public List<Event<Boolean>> execute(Event<Boolean> msg) {
+			return List.of();
 		}
 
 		@Override

@@ -1,7 +1,7 @@
 package rs.ac.bg.etf.domain.component;
 
-import rs.ac.bg.etf.domain.exceptions.InvalidNumberOfPorts;
-import rs.ac.bg.etf.domain.exceptions.PortIndexOutOfBound;
+import rs.ac.bg.etf.domain.exceptions.InvalidNumberOfPortsException;
+import rs.ac.bg.etf.domain.exceptions.PortIndexOutOfBoundExcepton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class ComponentPort<V> {
 	}
 
 	public static <V> ComponentPort<V> fromNumber(int numberOfPorts) {
-		if (numberOfPorts < 1) throw new InvalidNumberOfPorts();
+		if (numberOfPorts < 1) throw new InvalidNumberOfPortsException();
 
 		return new ComponentPort<>(numberOfPorts);
 	}
@@ -72,7 +72,7 @@ public class ComponentPort<V> {
 	}
 
 	private void checkPortIndexInBound(int atPort) {
-		if (atPort < 0 || atPort >= numberOfPorts) throw new PortIndexOutOfBound();
+		if (atPort < 0 || atPort >= numberOfPorts) throw new PortIndexOutOfBoundExcepton();
 	}
 
 	private List<ComponentPortValue<V>> initPortValues(int numberOfPorts) {

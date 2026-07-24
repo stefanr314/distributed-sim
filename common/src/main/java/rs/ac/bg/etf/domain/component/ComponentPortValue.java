@@ -1,11 +1,13 @@
 package rs.ac.bg.etf.domain.component;
 
-import rs.ac.bg.etf.domain.exceptions.InvalidPortIndexValue;
+import rs.ac.bg.etf.domain.exceptions.InvalidPortIndexValueException;
 
 import java.util.Optional;
 
 /**
- * This class serves as immutable class holder of port value within the component. Explicitly it is not an immutable
+ * Class {@code ComponentPortValue<V>} serves as immutable class holder of port value within the component. Explicitly
+ * it is
+ * not an immutable
  * class but contains private constructor with publicly available factory static methods. Implementation of
  * {@code equals()}
  * and {@code hashCode()} serves no purpose since port values has no need for "logical equality" and its effectively
@@ -19,17 +21,21 @@ import java.util.Optional;
  * @since 1.0
  */
 public class ComponentPortValue<V> {
+	//TODO
+//	private static final ComponentPortValue NULL_AT_ZERO_PORT =
+//			new ComponentPortValue<>(null, 0);
 	private final int portIndex;
 	private final V value;
 
 	private ComponentPortValue(V value, int portIndex) {
-		if (portIndex < 0) throw new InvalidPortIndexValue();
+		if (portIndex < 0) throw new InvalidPortIndexValueException(portIndex);
 
 		this.value = value;
 		this.portIndex = portIndex;
 	}
 
 	public static <V> ComponentPortValue<V> initValueAtPort(int atPort) {
+//		if (atPort == 0) return NULL_AT_ZERO_PORT;
 		return new ComponentPortValue<>(null, atPort);
 	}
 
@@ -56,4 +62,6 @@ public class ComponentPortValue<V> {
 				", value=" + value +
 				'}';
 	}
+
+
 }

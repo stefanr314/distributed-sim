@@ -1,7 +1,9 @@
 package rs.ac.bg.etf.domain.component;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class ComponentIdTest {
 
@@ -14,12 +16,12 @@ public class ComponentIdTest {
 		ComponentId c3 = new ComponentId(clientId);
 
 		//Assert
-		Assert.assertEquals(c1, c2);
-		Assert.assertEquals(c2, c1);
+		assertThat(c1).isEqualTo(c2);
+		assertThat(c2).isEqualTo(c1);
 
-		Assert.assertEquals(c1, c2);
-		Assert.assertEquals(c2, c3);
-		Assert.assertEquals(c1, c3);
+		assertThat(c1).isEqualTo(c2);
+		assertThat(c2).isEqualTo(c3);
+		assertThat(c3).isEqualTo(c1);
 	}
 
 	@Test
@@ -28,8 +30,8 @@ public class ComponentIdTest {
 		ComponentId c1 = new ComponentId(clientId);
 		ComponentId c2 = new ComponentId(clientId);
 
-		Assert.assertEquals(c1, c2);
-		Assert.assertEquals(c1.hashCode(), c2.hashCode());
+		assertThat(c1).isEqualTo(c2);
+		assertThat(c1.hashCode()).isEqualTo(c2.hashCode());
 	}
 
 }
