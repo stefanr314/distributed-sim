@@ -24,4 +24,5 @@ out/
 .crash
 
 
-
+# todo directives
+.todo
