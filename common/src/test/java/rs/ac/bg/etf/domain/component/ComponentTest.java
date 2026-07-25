@@ -53,10 +53,6 @@ public class ComponentTest {
 		public List<Event<Boolean>> execute(Event<Boolean> msg) {
 			return List.of();
 		}
-
-		@Override
-		public Component<Boolean> withValue(Boolean newValue) {
-			return null;
-		}
+		
 	}
 }
