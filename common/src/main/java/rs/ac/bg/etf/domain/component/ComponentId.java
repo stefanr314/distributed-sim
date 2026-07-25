@@ -16,7 +16,7 @@ public final class ComponentId {
 	private final int hash;
 
 	public ComponentId(String clientComponentId) {
-		this.componentId = clientComponentId;
+		this.componentId = Objects.requireNonNull(clientComponentId, "Component id can not be null value.");
 		// not the best performance ever seen, but it's called only upon initialization.
 		this.hash = Objects.hashCode(clientComponentId);
 	}
@@ -32,7 +32,6 @@ public final class ComponentId {
 		// check for is instance of and do the casting; otherwise just return false
 		if (o instanceof ComponentId that) {
 
-			// do the recursive equals checks for significant fields
 			return this.componentId.equals(that.componentId);
 		}
 

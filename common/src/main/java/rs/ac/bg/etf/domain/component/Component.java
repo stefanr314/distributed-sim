@@ -1,5 +1,6 @@
 package rs.ac.bg.etf.domain.component;
 
+import rs.ac.bg.etf.domain.connection.Connection;
 import rs.ac.bg.etf.domain.event.Event;
 import rs.ac.bg.etf.domain.exceptions.DelayNegativeException;
 
@@ -14,24 +15,24 @@ import java.util.Objects;
  *
  */
 public abstract class Component<V> {
-	//TODO: implement outward connections
 	private final ComponentId componentId;
 	private final ComponentPort<V> inputPort;
 	private final ComponentPort<V> outputPort;
 	private final long delay;
 	private final V value;
+	private final List<Connection> outgoing;
 
 
 	protected Component(ComponentId componentId, ComponentPort<V> inputPort, ComponentPort<V> outputPort, long delay,
-	                    V value) {
+	                    V value, List<Connection> outgoing) {
 		if (delay < 0) throw new DelayNegativeException();
 
 		this.componentId = componentId;
 		this.inputPort = Objects.requireNonNull(inputPort);
 		this.outputPort = Objects.requireNonNull(outputPort);
-
 		this.delay = delay;
 		this.value = Objects.requireNonNull(value);
+		this.outgoing = List.copyOf(outgoing);
 	}
 
 	@Override
@@ -64,6 +65,10 @@ public abstract class Component<V> {
 
 	public V getState() {
 		return value;
+	}
+
+	public List<Connection> outgoingConnections() {
+		return List.copyOf(outgoing);
 	}
 
 	@Override

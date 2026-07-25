@@ -15,7 +15,7 @@ class ConnectionTest {
 	 * behaviour is not perhaps wanted and will be the responsibility of other layer to cope with.
 	 */
 	@Test
-	public void testCreateConnectionSuccessfully() {
+	public void testConnectionEquality() {
 		//Act
 		ComponentId cid1 = new ComponentId("AA");
 		ComponentId cid2 = new ComponentId("AA");
@@ -26,7 +26,7 @@ class ConnectionTest {
 		Connection con1 = new Connection(cid1, cid2, fromPort, toPort);
 		Connection con2 = new Connection(cid1, cid2, fromPort, toPort);
 
-		assertThat(con1).isNotEqualTo(con2);
+		assertThat(con1).isEqualTo(con2);
 	}
 
 	@Test
@@ -44,4 +44,17 @@ class ConnectionTest {
 
 	}
 
+	@Test
+	public void throwExceptionUponNullReferencesOnComponentIds() {
+		ComponentId cid2 = new ComponentId("AA");
+
+		int fromPort = 1;
+		int toPort = 2;
+
+		assertThatExceptionOfType(NullPointerException.class)
+				.isThrownBy(() -> new Connection(null, cid2,
+						fromPort, toPort))
+				.withMessage("Source component must be provided.");
+
+	}
 }

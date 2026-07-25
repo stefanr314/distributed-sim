@@ -1,6 +1,9 @@
 package rs.ac.bg.etf.domain.event;
 
 import rs.ac.bg.etf.domain.component.ComponentId;
+import rs.ac.bg.etf.domain.exceptions.InvalidPortIndexValueException;
+
+import java.util.Objects;
 
 /**
  * Class {@code Event<V>} represents the event passed between components which holds the value
@@ -17,12 +20,40 @@ public final class Event<V> {
 	private final int atPort;
 	private final V value;
 	private final long atDiscreteTimeMoment;
+	private int hash;
 
 	public Event(ComponentId destinationComponent, int atPort, V value, long atDiscreteTimeMoment) {
-		this.destinationComponent = destinationComponent;
+		if (atPort < 0) throw new InvalidPortIndexValueException(atPort);
+
+		this.destinationComponent = Objects.requireNonNull(destinationComponent, "Destination component id of event " +
+				"must be different to null");
 		this.atPort = atPort;
 		this.value = value;
 		this.atDiscreteTimeMoment = atDiscreteTimeMoment;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == this) return true;
+
+		if (!(o instanceof Event<?> event)) return false;
+
+		return atPort == event.atPort && atDiscreteTimeMoment == event.atDiscreteTimeMoment && destinationComponent.equals(event.destinationComponent) && Objects.equals(value, event.value);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = hash;
+
+		if (result == 0) {
+			result = destinationComponent.hashCode();
+			result = 31 * result + Integer.hashCode(atPort);
+			result = 31 * result + Objects.hashCode(value);
+			result = 31 * result + Long.hashCode(atDiscreteTimeMoment);
+			hash = result;
+		}
+
+		return result;
 	}
 
 	public ComponentId destinationComponent() {
