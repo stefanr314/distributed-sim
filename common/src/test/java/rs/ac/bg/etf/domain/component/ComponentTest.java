@@ -21,10 +21,10 @@ public class ComponentTest {
 		ComponentPort<Boolean> out = ComponentPort.singlePort();
 		List<Connection> connections = new ArrayList<>();
 
-		Component<Boolean> andGate = new LogicalComponent(cid1, in, out, 2, true, connections);
-		Component<Boolean> orGate = new LogicalComponent(cid2, in, out, 2, true, connections);
-		Component<Boolean> andGate2 = new LogicalComponent(cid1, in, out, 2, true, connections);
-		Component<Boolean> andGate3 = new LogicalComponent(cid1, in, out, 2, true, connections);
+		Component<Boolean> andGate = new LogicalComponent(cid1, in, out, 2, connections);
+		Component<Boolean> orGate = new LogicalComponent(cid2, in, out, 2, connections);
+		Component<Boolean> andGate2 = new LogicalComponent(cid1, in, out, 2, connections);
+		Component<Boolean> andGate3 = new LogicalComponent(cid1, in, out, 2, connections);
 
 		// assert
 		assertThat(andGate).isNotEqualTo(orGate);
@@ -45,14 +45,14 @@ public class ComponentTest {
 
 		protected LogicalComponent(ComponentId componentId, ComponentPort<Boolean> inputPort,
 		                           ComponentPort<Boolean> outputPort,
-		                           long delay, boolean value, List<Connection> conns) {
-			super(componentId, inputPort, outputPort, delay, value, conns);
+		                           long delay, List<Connection> conns) {
+			super(componentId, inputPort, outputPort, delay, conns);
 		}
 
 		@Override
 		public List<Event<Boolean>> execute(Event<Boolean> msg) {
 			return List.of();
 		}
-		
+
 	}
 }

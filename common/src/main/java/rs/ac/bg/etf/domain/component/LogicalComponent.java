@@ -2,10 +2,13 @@ package rs.ac.bg.etf.domain.component;
 
 import rs.ac.bg.etf.domain.connection.Connection;
 import rs.ac.bg.etf.domain.event.Event;
+import rs.ac.bg.etf.domain.exceptions.ComputeNullInputValueException;
+import rs.ac.bg.etf.domain.exceptions.InvalidSizeOfInputValues;
 import rs.ac.bg.etf.domain.exceptions.MisroutedEventException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class LogicalComponent extends Component<Boolean> {
 	protected LogicalComponent(ComponentId componentId, ComponentPort<Boolean> inputPort, ComponentPort<Boolean> outputPort, long delay, List<Connection> outgoing) {
@@ -37,6 +40,15 @@ public abstract class LogicalComponent extends Component<Boolean> {
 		}
 
 		return listOfEvents;
+	}
+
+	protected void ensureExpectedNumberOfInputValues(int expected, List<Boolean> inputs) {
+		if (inputs.size() != expected) throw new InvalidSizeOfInputValues(expected, inputs.size());
+
+	}
+
+	protected void ensureAllInputValuesNotNull(List<Boolean> inputs) {
+		if (inputs.stream().anyMatch(Objects::isNull)) throw new ComputeNullInputValueException();
 	}
 
 	protected abstract Boolean computeValues(List<Boolean> inputs);

@@ -75,7 +75,7 @@ public abstract class Component<V> {
 		return outputPort.valueAtPort(0);
 	}
 
-	public List<V> inputValues() {
+	protected List<V> inputValues() {
 		if (!inputPort.allPortValuesSet()) return List.of();
 		List<V> inputValues = new ArrayList<>();
 
