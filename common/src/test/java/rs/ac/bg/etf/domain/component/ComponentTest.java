@@ -1,10 +1,10 @@
 package rs.ac.bg.etf.domain.component;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
-import rs.ac.bg.etf.domain.connection.Connection;
 import rs.ac.bg.etf.domain.event.Event;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,12 +19,11 @@ public class ComponentTest {
 		ComponentId cid2 = new ComponentId("C2");
 		ComponentPort<Boolean> in = ComponentPort.fromNumber(2);
 		ComponentPort<Boolean> out = ComponentPort.singlePort();
-		List<Connection> connections = new ArrayList<>();
 
-		Component<Boolean> andGate = new LogicalComponent(cid1, in, out, 2, connections);
-		Component<Boolean> orGate = new LogicalComponent(cid2, in, out, 2, connections);
-		Component<Boolean> andGate2 = new LogicalComponent(cid1, in, out, 2, connections);
-		Component<Boolean> andGate3 = new LogicalComponent(cid1, in, out, 2, connections);
+		Component<Boolean> andGate = new LogicalComponent(cid1, in, out, 2);
+		Component<Boolean> orGate = new LogicalComponent(cid2, in, out, 2);
+		Component<Boolean> andGate2 = new LogicalComponent(cid1, in, out, 2);
+		Component<Boolean> andGate3 = new LogicalComponent(cid1, in, out, 2);
 
 		// assert
 		assertThat(andGate).isNotEqualTo(orGate);
@@ -45,12 +44,13 @@ public class ComponentTest {
 
 		protected LogicalComponent(ComponentId componentId, ComponentPort<Boolean> inputPort,
 		                           ComponentPort<Boolean> outputPort,
-		                           long delay, List<Connection> conns) {
-			super(componentId, inputPort, outputPort, delay, conns);
+		                           long delay) {
+			super(componentId, inputPort, outputPort, delay);
 		}
 
+		@Contract(pure = true)
 		@Override
-		public List<Event<Boolean>> execute(Event<Boolean> msg) {
+		public @NotNull List<Event<Boolean>> execute(Event<Boolean> msg) {
 			return List.of();
 		}
 
