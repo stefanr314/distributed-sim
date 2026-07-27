@@ -1,7 +1,5 @@
 package rs.ac.bg.etf.domain.component;
 
-import rs.ac.bg.etf.domain.connection.Connection;
-
 import java.util.List;
 
 /**
@@ -10,8 +8,8 @@ import java.util.List;
  */
 public class NotGateLogicalComponent extends LogicalComponent {
 	public NotGateLogicalComponent(ComponentId componentId, ComponentPort<Boolean> inputPort,
-	                               ComponentPort<Boolean> outputPort, long delay, List<Connection> outgoing) {
-		super(componentId, inputPort, outputPort, delay, outgoing);
+	                               ComponentPort<Boolean> outputPort, long delay) {
+		super(componentId, inputPort, outputPort, delay);
 	}
 
 	/**
@@ -28,7 +26,7 @@ public class NotGateLogicalComponent extends LogicalComponent {
 		ensureAllInputValuesNotNull(inputs);
 
 		ensureExpectedNumberOfInputValues(1, inputs);
-		
+
 		return !inputs.get(0);
 	}
 }

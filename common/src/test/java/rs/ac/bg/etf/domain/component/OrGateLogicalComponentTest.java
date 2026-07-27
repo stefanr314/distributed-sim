@@ -11,6 +11,7 @@ import rs.ac.bg.etf.domain.exceptions.InvalidSizeOfInputValues;
 import rs.ac.bg.etf.domain.exceptions.MisroutedEventException;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,8 +33,11 @@ class OrGateLogicalComponentTest {
 		long delay2 = 10;
 		Connection con = new Connection(cid, new ComponentId("B2"), 0, 0);
 
-		finalGate = new OrGateLogicalComponent(cid, in, out, delay1, List.of());
-		gate = new OrGateLogicalComponent(cid, in, out, delay2, List.of(con));
+		finalGate = new OrGateLogicalComponent(cid, in, out, delay1);
+		gate = new OrGateLogicalComponent(cid, in, out, delay2);
+
+		finalGate.attachOutgoingConnections(Collections.emptyList());
+		gate.attachOutgoingConnections(List.of(con));
 	}
 
 	@Test

@@ -1,5 +1,6 @@
 package rs.ac.bg.etf.domain.component;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -18,11 +19,14 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 
 class AndGateLogicalComponentTest {
-	private AndGateLogicalComponent newGate(long delay, List<Connection> outgoing) {
+	private @NotNull AndGateLogicalComponent newGate(long delay, List<Connection> outgoing) {
 		ComponentId id = new ComponentId("G1");
 		ComponentPort<Boolean> input = ComponentPort.fromNumber(2);
 		ComponentPort<Boolean> output = ComponentPort.singlePort();
-		return new AndGateLogicalComponent(id, input, output, delay, outgoing);
+		AndGateLogicalComponent andGateLogicalComponent = new AndGateLogicalComponent(id, input, output, delay);
+		andGateLogicalComponent.attachOutgoingConnections(outgoing);
+
+		return andGateLogicalComponent;
 	}
 
 	@Test

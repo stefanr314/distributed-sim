@@ -16,7 +16,10 @@ class NotGateLogicalComponentTest {
 		ComponentId id = new ComponentId("N1");
 		ComponentPort<Boolean> input = ComponentPort.singlePort();
 		ComponentPort<Boolean> output = ComponentPort.singlePort();
-		return new NotGateLogicalComponent(id, input, output, delay, outgoing);
+		NotGateLogicalComponent notGateLogicalComponent = new NotGateLogicalComponent(id, input, output, delay);
+		notGateLogicalComponent.attachOutgoingConnections(outgoing);
+
+		return notGateLogicalComponent;
 	}
 
 	@ParameterizedTest
