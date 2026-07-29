@@ -47,6 +47,10 @@ public class ComponentPort<V> {
 		return this.numberOfPorts;
 	}
 
+	public boolean isValidIndexValue(int portIndex) {
+		return portIndex >= 0 && portIndex < numberOfPorts;
+	}
+
 	public boolean valueSetAtPort(int atPort) {
 		checkPortIndexInBound(atPort);
 

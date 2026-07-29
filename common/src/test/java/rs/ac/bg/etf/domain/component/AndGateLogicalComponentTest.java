@@ -24,7 +24,10 @@ class AndGateLogicalComponentTest {
 		ComponentPort<Boolean> input = ComponentPort.fromNumber(2);
 		ComponentPort<Boolean> output = ComponentPort.singlePort();
 		AndGateLogicalComponent andGateLogicalComponent = new AndGateLogicalComponent(id, input, output, delay);
-		andGateLogicalComponent.attachOutgoingConnections(outgoing);
+		for (Connection connection : outgoing) {
+
+			andGateLogicalComponent.attachOutgoingConnection(connection);
+		}
 
 		return andGateLogicalComponent;
 	}

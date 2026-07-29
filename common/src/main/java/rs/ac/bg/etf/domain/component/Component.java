@@ -4,7 +4,10 @@ import rs.ac.bg.etf.domain.connection.Connection;
 import rs.ac.bg.etf.domain.event.Event;
 import rs.ac.bg.etf.domain.exceptions.DelayNegativeException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Class {@code Component<V>} serves as root class depicting key component API.
@@ -17,17 +20,16 @@ public abstract class Component<V> {
 	private final ComponentPort<V> inputPort;
 	private final ComponentPort<V> outputPort;
 	private final long delay;
-	private List<Connection> outgoing;
+	private final List<Connection> outgoing = new ArrayList<>();
 
 
 	protected Component(ComponentId componentId, ComponentPort<V> inputPort, ComponentPort<V> outputPort, long delay) {
 		if (delay < 0) throw new DelayNegativeException();
 
-		this.componentId = componentId;
+		this.componentId = Objects.requireNonNull(componentId);
 		this.inputPort = Objects.requireNonNull(inputPort);
 		this.outputPort = Objects.requireNonNull(outputPort);
 		this.delay = delay;
-		this.outgoing = Collections.emptyList();
 	}
 
 	@Override
@@ -68,14 +70,16 @@ public abstract class Component<V> {
 
 
 	/**
-	 * A method that acts as mutator/setter method of outgoing component's connections, since this structure will be
-	 * only provided after instantization of concrete component classes. Since the reference is younger than the
-	 * component it will be additionally provided with respect of field referencing an empty list upon initialization.
+	 * Registers {@code connection} as one of this component's outgoing connections, consulted by
+	 * {@link #execute(Event)} when addressing the events it produces. Intended to be called exclusively
+	 * by the owning {@code Netlist}, immediately after a connection originating from this component has
+	 * been validated and added to it — calling this directly, bypassing the owning {@code Netlist}, will
+	 * cause this component's outgoing connections to diverge from what the netlist itself reports.
 	 *
-	 * @param outgoing {@code List<Connection>} list of component's outgoing connections.
+	 * @param connection a connection whose source is this component's id
 	 */
-	public void attachOutgoingConnections(List<Connection> outgoing) {
-		this.outgoing = List.copyOf(outgoing);
+	public void attachOutgoingConnection(Connection connection) {
+		outgoing.add(connection);
 	}
 
 	/**
@@ -103,7 +107,11 @@ public abstract class Component<V> {
 
 	@Override
 	public String toString() {
-		return "Component{" + "componentId=" + componentId + ", inputPort=" + inputPort + ", outputPort=" + outputPort + ", delay=" + delay + ", outgoing=" + outgoing + '}';
+		return "Component{" + "componentId=" + componentId + ", " +
+				"inputPort=" + inputPort + ", " +
+				"outputPort=" + outputPort + ", " +
+				"delay=" + delay + ", " +
+				"outgoing=" + outgoing + '}';
 	}
 
 	/**
