@@ -17,7 +17,10 @@ class NotGateLogicalComponentTest {
 		ComponentPort<Boolean> input = ComponentPort.singlePort();
 		ComponentPort<Boolean> output = ComponentPort.singlePort();
 		NotGateLogicalComponent notGateLogicalComponent = new NotGateLogicalComponent(id, input, output, delay);
-		notGateLogicalComponent.attachOutgoingConnections(outgoing);
+		for (Connection connection : outgoing) {
+
+			notGateLogicalComponent.attachOutgoingConnection(connection);
+		}
 
 		return notGateLogicalComponent;
 	}
