@@ -132,8 +132,6 @@ public abstract class Netlist<V> {
 			if (connection.source().equals(id)) outgoing.add(connection);
 		}
 
-		//fixme: attach them
-
 		return outgoing;
 	}
 
