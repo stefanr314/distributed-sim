@@ -38,7 +38,8 @@ public final class Event<V> {
 
 		if (!(o instanceof Event<?> event)) return false;
 
-		return atPort == event.atPort && atDiscreteTimeMoment == event.atDiscreteTimeMoment && destinationComponent.equals(event.destinationComponent) && Objects.equals(value, event.value);
+		return atPort == event.atPort && atDiscreteTimeMoment == event.atDiscreteTimeMoment
+				&& destinationComponent.equals(event.destinationComponent) && Objects.equals(value, event.value);
 	}
 
 	@Override
