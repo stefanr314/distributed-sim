@@ -16,11 +16,9 @@ import java.util.Map;
  */
 public class LogicalNetlist extends Netlist<Boolean> {
 	private static final Map<LogicalGateTypes, Builder> BUILDERS = Map.of(
-			LogicalGateTypes.AND, (id, in, delay) -> new AndGateLogicalComponent(id, in, ComponentPort.singlePort(), delay),
-			LogicalGateTypes.OR, (id, in, delay) -> new OrGateLogicalComponent(id, in, ComponentPort.singlePort(),
-					delay),
-			LogicalGateTypes.NOT, (id, in, delay) -> new NotGateLogicalComponent(id, in, ComponentPort.singlePort(),
-					delay));
+			LogicalGateTypes.AND, AndGateLogicalComponent::new,
+			LogicalGateTypes.OR, OrGateLogicalComponent::new,
+			LogicalGateTypes.NOT, NotGateLogicalComponent::new);
 
 	protected LogicalNetlist() {
 	}
@@ -52,17 +50,15 @@ public class LogicalNetlist extends Netlist<Boolean> {
 					"Type provided is not supported. Provided type:" + logicalGateType);
 
 		ComponentId id = composer.componentId();
-		ComponentPort<Boolean> inputPort = ComponentPort.fromNumber(composer.inputPorts());
 		long delay = composer.delay();
 
 		return builder.build(
-				id, inputPort, delay
+				id, delay
 		);
 	}
 
-
 	@FunctionalInterface
 	private interface Builder {
-		Component<Boolean> build(ComponentId id, ComponentPort<Boolean> in, long delay);
+		Component<Boolean> build(ComponentId id, long delay);
 	}
 }

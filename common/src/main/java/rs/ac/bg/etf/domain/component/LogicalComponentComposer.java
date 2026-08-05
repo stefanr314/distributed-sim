@@ -4,18 +4,15 @@ package rs.ac.bg.etf.domain.component;
  * Class that acts as the composer of logical component parts.
  */
 public final class LogicalComponentComposer {
-	private static final int EXPECTED_NUMBER_OF_ENTRIES = 4;
+	private static final int EXPECTED_NUMBER_OF_ENTRIES = 3;
 
 	private final LogicalGateTypes type;
 	private final ComponentId componentId;
-	private final int inputPorts;
 	private final long delay;
 
-
-	private LogicalComponentComposer(LogicalGateTypes type, ComponentId componentId, int inputPorts, long delay) {
+	private LogicalComponentComposer(LogicalGateTypes type, ComponentId componentId, long delay) {
 		this.type = type;
 		this.componentId = componentId;
-		this.inputPorts = inputPorts;
 		this.delay = delay;
 	}
 
@@ -26,8 +23,7 @@ public final class LogicalComponentComposer {
 				d -> new LogicalComponentComposer(
 						Enum.valueOf(LogicalGateTypes.class, d[0]),
 						new ComponentId(d[1]),
-						Integer.parseInt(d[2]),
-						Long.parseLong(d[3])
+						Long.parseLong(d[2])
 				));
 	}
 
@@ -39,10 +35,6 @@ public final class LogicalComponentComposer {
 		return componentId;
 	}
 
-	public int inputPorts() {
-		return inputPorts;
-	}
-
 	public long delay() {
 		return delay;
 	}
@@ -52,7 +44,6 @@ public final class LogicalComponentComposer {
 		return "LogicalComponentComposer{" +
 				"type=" + type +
 				", componentId=" + componentId +
-				", inputPorts=" + inputPorts +
 				", delay=" + delay +
 				'}';
 	}

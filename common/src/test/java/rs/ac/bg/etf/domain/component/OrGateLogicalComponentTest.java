@@ -7,7 +7,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import rs.ac.bg.etf.domain.connection.Connection;
 import rs.ac.bg.etf.domain.event.Event;
 import rs.ac.bg.etf.domain.exceptions.ComputeNullInputValueException;
-import rs.ac.bg.etf.domain.exceptions.InvalidSizeOfInputValues;
 import rs.ac.bg.etf.domain.exceptions.MisroutedEventException;
 
 import java.util.Arrays;
@@ -26,14 +25,12 @@ class OrGateLogicalComponentTest {
 	@BeforeEach
 	void setUp() {
 		ComponentId cid = new ComponentId("B1");
-		ComponentPort<Boolean> in = ComponentPort.fromNumber(2);
-		ComponentPort<Boolean> out = ComponentPort.singlePort();
 		long delay1 = 5;
 		long delay2 = 10;
 		Connection con = new Connection(cid, new ComponentId("B2"), 0, 0);
 
-		finalGate = new OrGateLogicalComponent(cid, in, out, delay1);
-		gate = new OrGateLogicalComponent(cid, in, out, delay2);
+		finalGate = new OrGateLogicalComponent(cid, delay1);
+		gate = new OrGateLogicalComponent(cid, delay2);
 
 //		finalGate.attachOutgoingConnections(Collections.emptyList());
 		gate.attachOutgoingConnection(con);
@@ -52,14 +49,6 @@ class OrGateLogicalComponentTest {
 		List<Boolean> partialInputs = Arrays.asList(Boolean.TRUE, null);
 
 		assertThatExceptionOfType(ComputeNullInputValueException.class).isThrownBy(() -> finalGate.computeValues(partialInputs));
-	}
-
-	@Test
-	void computeValuesThrowsWhenWrongInputCount() {
-		List<Boolean> tooFew = List.of(Boolean.TRUE);
-
-		assertThatExceptionOfType(InvalidSizeOfInputValues.class)
-				.isThrownBy(() -> finalGate.computeValues(tooFew));
 	}
 
 	@ParameterizedTest

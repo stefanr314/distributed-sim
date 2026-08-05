@@ -10,10 +10,32 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Class {@code Component<V>} serves as root class depicting key component API.
+ * Class {@code Component<V>} serves as root class depicting key component API. Each component has a
+ * fixed identity ({@link ComponentId}), a fixed input/output port configuration, and a fixed
+ * propagation delay — all set at construction and never mutated afterward. Port <em>values</em>,
+ * however, are mutable: {@link ComponentPort} tracks the current value on each port as events are
+ * processed, since a single component instance is repeatedly re-evaluated across many discrete time
+ * moments during a simulation.
+ * <p>
+ * Outgoing connections are a special case: a component is constructed with none, and they are attached
+ * one at a time afterward via {@link #attachOutgoingConnection(Connection)}. This reflects the netlist
+ * file format itself — all components are declared first, then all connections referencing them — so a
+ * component's wiring is necessarily incomplete at construction time and only becomes whole once its
+ * owning {@code Netlist} has finished processing every connection that originates from it.
+ * <p>
+ * Equality and hashing are defined solely by {@link ComponentId} — two {@code Component} instances
+ * sharing the same id are treated as the same logical component regardless of their current port state,
+ * consistent with a component's identity surviving serialization across the network while its state
+ * does not need to.
+ * <p>
+ * Subclasses supply the actual computation via {@link #execute(Event)}; this class deliberately knows
+ * nothing about network transport, synchronization strategy (conservative vs. optimistic), or which of
+ * its connections are local versus external to the partition it happens to run in — those are the
+ * responsibility of {@code Netlist} and {@code Simulator} respectively.
  *
  * @param <V> type parameter of component's value
- *
+ * @author stefanr
+ * @since 1.0
  */
 public abstract class Component<V> {
 	private final ComponentId componentId;
