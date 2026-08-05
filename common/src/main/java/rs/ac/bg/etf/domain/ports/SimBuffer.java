@@ -33,6 +33,8 @@ public interface SimBuffer<V> {
 	 * simulator's thread yields instead of busy-waiting.
 	 *
 	 * @return the next event delivered to this buffer, once one arrives
+	 * @throws InterruptedException - this is a blocking method so special care is required for orchestrating
+	 *                              interrupt event.
 	 */
-	Event<V> receive();
+	Event<V> receive() throws InterruptedException;
 }
