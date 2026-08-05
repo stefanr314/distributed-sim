@@ -150,6 +150,30 @@ class ConservativeSimulatorTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
+	void noValueMessageProducedDoesNotSendNullMessagesInternally() {
+		ComponentId sourceId = new ComponentId("G1");
+		ComponentId targetId = new ComponentId("INTERNAL");
+		Connection external = new Connection(sourceId, targetId, 0, 0);
+
+		Component<Boolean> component = mock(Component.class);
+		when(component.delay()).thenReturn(3L);
+		when(component.outgoingConnections()).thenReturn(List.of(external));
+
+		Component<Boolean> targetComponent = mock(Component.class);
+
+		Netlist<Boolean> netlistDouble = mock(Netlist.class);
+		when(netlistDouble.components()).thenReturn(Map.of(sourceId, component, targetId, targetComponent));
+
+		ConservativeSimulator<Boolean> sim =
+				new ConservativeSimulator<>(buffer, netlistDouble, 100L, Set.of());
+
+		sim.noValueMessageProduced(new Event<>(sourceId, 0, true, 10L), component);
+
+		verify(buffer, never()).send(new Event<>(targetId, 0, null, 13L));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
 	void declareEndSendsFinalNullEventsToEveryExternalConnection() {
 		ComponentId sourceId = new ComponentId("N1");
 		Connection external = new Connection(sourceId, new ComponentId("REMOTE"), 0, 0);

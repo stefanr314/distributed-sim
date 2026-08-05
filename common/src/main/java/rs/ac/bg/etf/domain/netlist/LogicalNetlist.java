@@ -22,6 +22,9 @@ public class LogicalNetlist extends Netlist<Boolean> {
 			LogicalGateTypes.NOT, (id, in, delay) -> new NotGateLogicalComponent(id, in, ComponentPort.singlePort(),
 					delay));
 
+	protected LogicalNetlist() {
+	}
+
 	/**
 	 * @return a new, empty {@code LogicalNetlist} ready to accept components and connections
 	 */

@@ -38,8 +38,8 @@ public class ConservativeSimulator<V> extends Simulator<V> {
 	 *                            component outside it — determined by the server when this partition
 	 *                            was assigned. Each is seeded with a channel clock of {@code 0}.
 	 */
-	protected ConservativeSimulator(SimBuffer<V> buffer, Netlist<V> netlist, long simulationEndTime,
-	                                Set<InputPortKey> externalConnections) {
+	public ConservativeSimulator(SimBuffer<V> buffer, Netlist<V> netlist, long simulationEndTime,
+	                             Set<InputPortKey> externalConnections) {
 		super(buffer, netlist, simulationEndTime);
 		this.externalChannelClocks = (externalize(externalConnections));
 	}
@@ -121,7 +121,7 @@ public class ConservativeSimulator<V> extends Simulator<V> {
 
 		long finalTime = simulationEndTime();
 
-		// broadcast null end time messages; inner null messages are not gonna be send, check the method declaration
+		// broadcast null end time messages; inner null messages are not gonna be sent, check the method declaration
 		for (Component<V> component : netlist().components().values()) {
 			sendNullFromComponentWithClockValue(component, finalTime);
 		}

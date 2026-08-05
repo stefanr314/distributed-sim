@@ -72,8 +72,13 @@ public abstract class Simulator<V> {
 	 * queue head is dispatched if {@link #safeToProceed(Event)} allows it; otherwise this thread blocks
 	 * on {@link SimBuffer#receive()} until something arrives, handled via {@link #onMessageArrived(Event)},
 	 * before re-checking the head. Calls {@link #declareEnd()} once terminated.
+	 *
+	 * @throws InterruptedException - required to delegate this exception risen from blocking
+	 *                              {@link SimBuffer#receive()} to appropriate orchestrating logic that can detect and handle interrupt
 	 */
-	public void simulate() {
+	public void simulate() throws InterruptedException {
+		System.out.println("Simulation starting on thread " + Thread.currentThread().getName());
+
 		while (!isTerminated()) {
 			Event<V> event = queue.peek();
 
