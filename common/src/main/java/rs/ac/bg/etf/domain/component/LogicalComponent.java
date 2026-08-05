@@ -85,10 +85,13 @@ public abstract class LogicalComponent extends Component<Boolean> {
 	 * e.g. from unit tests. Currently, no implementations change the default method visibility so the check is never
 	 * triggered from client's code.
 	 *
+	 * <p>With the proper construction of components this method becomes deprecated and redundant.</p>
+	 *
 	 * @param expected number of input values this gate's truth table requires
 	 * @param inputs   the input values to validate
 	 * @throws InvalidSizeOfInputValues if {@code inputs.size() != expected}
 	 */
+	@Deprecated
 	protected void ensureExpectedNumberOfInputValues(int expected, @NotNull List<Boolean> inputs) {
 		if (inputs.size() != expected) throw new InvalidSizeOfInputValues(expected, inputs.size());
 

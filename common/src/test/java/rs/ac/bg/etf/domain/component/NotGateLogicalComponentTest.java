@@ -14,11 +14,9 @@ class NotGateLogicalComponentTest {
 
 	private NotGateLogicalComponent newGate(long delay, List<Connection> outgoing) {
 		ComponentId id = new ComponentId("N1");
-		ComponentPort<Boolean> input = ComponentPort.singlePort();
-		ComponentPort<Boolean> output = ComponentPort.singlePort();
-		NotGateLogicalComponent notGateLogicalComponent = new NotGateLogicalComponent(id, input, output, delay);
+		NotGateLogicalComponent notGateLogicalComponent = new NotGateLogicalComponent(id, delay);
+		
 		for (Connection connection : outgoing) {
-
 			notGateLogicalComponent.attachOutgoingConnection(connection);
 		}
 

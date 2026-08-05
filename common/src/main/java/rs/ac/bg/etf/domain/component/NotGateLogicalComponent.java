@@ -7,9 +7,14 @@ import java.util.List;
  * the received value on input port.
  */
 public class NotGateLogicalComponent extends LogicalComponent {
-	public NotGateLogicalComponent(ComponentId componentId, ComponentPort<Boolean> inputPort,
-	                               ComponentPort<Boolean> outputPort, long delay) {
-		super(componentId, inputPort, outputPort, delay);
+	/**
+	 * Default values of input and output ports and known and should not be passed as constructions arguments.
+	 *
+	 * @param componentId - id of component, string representation of component.
+	 * @param delay       - delay that component brings to the distributed network.
+	 */
+	public NotGateLogicalComponent(ComponentId componentId, long delay) {
+		super(componentId, ComponentPort.singlePort(), ComponentPort.singlePort(), delay);
 	}
 
 	/**
@@ -25,7 +30,8 @@ public class NotGateLogicalComponent extends LogicalComponent {
 	protected Boolean computeValues(List<Boolean> inputs) {
 		ensureAllInputValuesNotNull(inputs);
 
-		ensureExpectedNumberOfInputValues(1, inputs);
+		// this check becomes redundant with the construction fix implemented
+//		ensureExpectedNumberOfInputValues(1, inputs);
 
 		return !inputs.get(0);
 	}

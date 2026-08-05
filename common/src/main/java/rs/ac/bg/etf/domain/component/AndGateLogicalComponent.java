@@ -10,9 +10,16 @@ import java.util.List;
  * @since 1.0
  */
 public class AndGateLogicalComponent extends LogicalComponent {
-	public AndGateLogicalComponent(ComponentId componentId, ComponentPort<Boolean> inputPort,
-	                               ComponentPort<Boolean> outputPort, long delay) {
-		super(componentId, inputPort, outputPort, delay);
+	/**
+	 * Default values of input and output ports and known and should not be passed as constructions arguments.
+	 *
+	 * @param componentId - id of component, string representation of component.
+	 * @param delay       - delay that component brings to the distributed network.
+	 */
+	public AndGateLogicalComponent(ComponentId componentId,
+	                               long delay) {
+		super(componentId, ComponentPort.fromNumber(2), ComponentPort.singlePort(), delay);
+
 	}
 
 	/**
@@ -28,10 +35,10 @@ public class AndGateLogicalComponent extends LogicalComponent {
 	@Override
 	protected Boolean computeValues(List<Boolean> inputs) {
 		ensureAllInputValuesNotNull(inputs);
-		//ensure two inputs have arisen
-		ensureExpectedNumberOfInputValues(2, inputs);
-		//return the and gate logic
-		return inputs.get(0) && inputs.get(1);
 
+		// this check becomes redundant with the construction fix implemented
+//		ensureExpectedNumberOfInputValues(2, inputs);
+
+		return inputs.get(0) && inputs.get(1);
 	}
 }

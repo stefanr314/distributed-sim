@@ -7,7 +7,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import rs.ac.bg.etf.domain.connection.Connection;
 import rs.ac.bg.etf.domain.event.Event;
 import rs.ac.bg.etf.domain.exceptions.ComputeNullInputValueException;
-import rs.ac.bg.etf.domain.exceptions.InvalidSizeOfInputValues;
 import rs.ac.bg.etf.domain.exceptions.MisroutedEventException;
 
 import java.util.Arrays;
@@ -21,11 +20,9 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 class AndGateLogicalComponentTest {
 	private @NotNull AndGateLogicalComponent newGate(long delay, List<Connection> outgoing) {
 		ComponentId id = new ComponentId("G1");
-		ComponentPort<Boolean> input = ComponentPort.fromNumber(2);
-		ComponentPort<Boolean> output = ComponentPort.singlePort();
-		AndGateLogicalComponent andGateLogicalComponent = new AndGateLogicalComponent(id, input, output, delay);
-		for (Connection connection : outgoing) {
+		AndGateLogicalComponent andGateLogicalComponent = new AndGateLogicalComponent(id, delay);
 
+		for (Connection connection : outgoing) {
 			andGateLogicalComponent.attachOutgoingConnection(connection);
 		}
 
@@ -48,15 +45,6 @@ class AndGateLogicalComponentTest {
 		List<Boolean> partialInputs = Arrays.asList(Boolean.TRUE, null);
 
 		assertThatExceptionOfType(ComputeNullInputValueException.class).isThrownBy(() -> gate.computeValues(partialInputs));
-	}
-
-	@Test
-	void computeValuesThrowsWhenWrongInputCount() {
-		AndGateLogicalComponent gate = newGate(1, List.of());
-		List<Boolean> tooFew = List.of(Boolean.TRUE);
-
-		assertThatExceptionOfType(InvalidSizeOfInputValues.class)
-				.isThrownBy(() -> gate.computeValues(tooFew));
 	}
 
 	@ParameterizedTest
@@ -95,6 +83,4 @@ class AndGateLogicalComponentTest {
 		assertThatExceptionOfType(MisroutedEventException.class)
 				.isThrownBy(() -> gate.execute(misrouted));
 	}
-
-
 }

@@ -9,22 +9,22 @@ class LogicalComponentComposerTest {
 	@Test
 	void parseValidDataSuccessfullyCreatesComposer() {
 		// Arrange
-		String[] data = new String[]{"AND", "GATE_1", "2", "10"};
+		String[] data = new String[]{"AND", "GATE_1", "10"};
 
 		// Act
 		LogicalComponentComposer composer = LogicalComponentComposer.parse(data);
 
 		// Assert
-		assertThat(composer).returns(LogicalGateTypes.AND, from(LogicalComponentComposer::type))
+		assertThat(composer)
+				.returns(LogicalGateTypes.AND, from(LogicalComponentComposer::type))
 				.returns(new ComponentId("GATE_1"), from(LogicalComponentComposer::componentId))
-				.returns(2, from(LogicalComponentComposer::inputPorts))
 				.returns(10L, LogicalComponentComposer::delay);
 	}
 
 
 	@Test
 	void parseInvalidEnumTypesThrowsException() {
-		String[] invalidEnumData = new String[]{"UNKNOWN_GATE", "GATE_1", "2", "10"};
+		String[] invalidEnumData = new String[]{"UNKNOWN_GATE", "GATE_1", "10"};
 
 		assertThatExceptionOfType(MalformedComponentDataException.class)
 				.isThrownBy(() -> LogicalComponentComposer.parse(invalidEnumData))
@@ -33,7 +33,7 @@ class LogicalComponentComposerTest {
 
 	@Test
 	void parseInvalidNumberFormatThrowsException() {
-		String[] invalidNumberData = new String[]{"AND", "GATE_1", "NaN", "10"};
+		String[] invalidNumberData = new String[]{"AND", "GATE_1", "NaN"};
 
 		assertThatExceptionOfType(MalformedComponentDataException.class)
 				.isThrownBy(() -> LogicalComponentComposer.parse(invalidNumberData))

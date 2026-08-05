@@ -41,6 +41,5 @@ class ComponentParserTest {
 
 		then(thrown).isInstanceOf(MalformedComponentDataException.class)
 				.hasMessage("Expected at least 3 entries, but got: 1");
-
 	}
 }
