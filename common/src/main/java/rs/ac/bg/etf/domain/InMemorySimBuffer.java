@@ -4,6 +4,7 @@ import rs.ac.bg.etf.domain.event.Event;
 import rs.ac.bg.etf.domain.exceptions.UnknownRoutingDestinationException;
 import rs.ac.bg.etf.domain.ports.SimBuffer;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 
@@ -28,7 +29,7 @@ import java.util.concurrent.BlockingQueue;
  * @author stefanr
  * @since 1.0
  */
-public class InMemorySimBuffer<V> implements SimBuffer<V> {
+public class InMemorySimBuffer<V extends Serializable> implements SimBuffer<V> {
 	private final SimpleWorkstationRouting<V> routing;
 	private final BlockingQueue<Event<V>> inbox;
 

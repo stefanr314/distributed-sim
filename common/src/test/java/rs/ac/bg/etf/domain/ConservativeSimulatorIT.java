@@ -10,7 +10,11 @@ import rs.ac.bg.etf.domain.netlist.LogicalNetlist;
 import rs.ac.bg.etf.domain.netlist.Pair;
 import rs.ac.bg.etf.domain.ports.SimBuffer;
 
-import java.util.*;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,7 +28,7 @@ import static org.assertj.core.api.Assertions.tuple;
  */
 class ConservativeSimulatorIT {
 
-	private <V> Runnable runMe(Simulator<V> simulator) {
+	private <V extends Serializable> Runnable runMe(Simulator<V> simulator) {
 		return () -> {
 			try {
 				simulator.simulate();
@@ -92,6 +96,6 @@ class ConservativeSimulatorIT {
 
 		assertThat(netlist2.getState())
 				.extracting(Pair::id, Pair::value)
-				.containsExactly(tuple(new ComponentId("N2"), Optional.of(true)));
+				.containsExactly(tuple(new ComponentId("N2"), (true)));
 	}
 }

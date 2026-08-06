@@ -4,6 +4,8 @@ import org.jetbrains.annotations.Contract;
 import rs.ac.bg.etf.domain.component.*;
 import rs.ac.bg.etf.domain.exceptions.MalformedComponentDataException;
 
+import java.io.Serializable;
+
 /**
  * Class {@code DelayNetlist} is a {@link Netlist} who's every component is a {@link DelayOnlyComponent} —
  * a pass-through component that forwards its input unchanged after a configured propagation delay,
@@ -13,9 +15,9 @@ import rs.ac.bg.etf.domain.exceptions.MalformedComponentDataException;
  * @author stefanr
  * @since 1.0
  */
-public class DelayNetlist<V> extends Netlist<V> {
+public class DelayNetlist<V extends Serializable> extends Netlist<V> {
 	@Contract(" -> new")
-	public static <V> DelayNetlist<V> create() {
+	public static <V extends Serializable> DelayNetlist<V> create() {
 		return new DelayNetlist<>();
 	}
 

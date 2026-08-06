@@ -6,6 +6,7 @@ import rs.ac.bg.etf.domain.event.Event;
 import rs.ac.bg.etf.domain.netlist.Netlist;
 import rs.ac.bg.etf.domain.ports.SimBuffer;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -32,7 +33,7 @@ import java.util.PriorityQueue;
  * @author stefanr
  * @since 1.0
  */
-public abstract class Simulator<V> {
+public abstract class Simulator<V extends Serializable> {
 	private final SimBuffer<V> buffer;
 	private final Netlist<V> netlist;
 	private final PriorityQueue<Event<V>> queue = new PriorityQueue<>(
@@ -77,8 +78,6 @@ public abstract class Simulator<V> {
 	 *                              {@link SimBuffer#receive()} to appropriate orchestrating logic that can detect and handle interrupt
 	 */
 	public void simulate() throws InterruptedException {
-		System.out.println("Simulation starting on thread " + Thread.currentThread().getName());
-
 		while (!isTerminated()) {
 			Event<V> event = queue.peek();
 

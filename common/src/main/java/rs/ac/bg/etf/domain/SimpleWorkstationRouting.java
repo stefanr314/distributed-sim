@@ -3,6 +3,7 @@ package rs.ac.bg.etf.domain;
 import rs.ac.bg.etf.domain.component.ComponentId;
 import rs.ac.bg.etf.domain.event.Event;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
@@ -30,7 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author stefanr
  * @since 1.0
  */
-public class SimpleWorkstationRouting<V> {
+public class SimpleWorkstationRouting<V extends Serializable> {
 	private final Map<ComponentId, BlockingQueue<Event<V>>> routing;
 
 	/**

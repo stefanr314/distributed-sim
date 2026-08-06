@@ -1,5 +1,7 @@
 package rs.ac.bg.etf.domain.component;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -11,7 +13,10 @@ import java.util.Objects;
  * @author stefanr
  * @since 1.0
  */
-public final class ComponentId {
+public final class ComponentId implements Serializable {
+	@Serial
+	private static final long serialVersionUID = 1L;
+
 	private final String componentId;
 	private final int hash;
 

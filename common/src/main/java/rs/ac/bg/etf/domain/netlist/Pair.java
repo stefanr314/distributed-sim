@@ -1,6 +1,12 @@
 package rs.ac.bg.etf.domain.netlist;
 
-public final class Pair<K, V> {
+import java.io.Serial;
+import java.io.Serializable;
+
+public final class Pair<K extends Serializable, V extends Serializable> implements Serializable {
+	@Serial
+	private static final long serialVersionUID = 8L;
+
 	private final K id;
 	private final V value;
 
@@ -16,7 +22,7 @@ public final class Pair<K, V> {
 	public V value() {
 		return value;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Pair{" +

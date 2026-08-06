@@ -9,6 +9,7 @@ import rs.ac.bg.etf.domain.exceptions.MisroutedEventBufferReceiveException;
 import rs.ac.bg.etf.domain.netlist.Netlist;
 import rs.ac.bg.etf.domain.ports.SimBuffer;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -27,7 +28,7 @@ import static java.util.Collections.min;
  * @author stefanr
  * @since 1.0
  */
-public class ConservativeSimulator<V> extends Simulator<V> {
+public class ConservativeSimulator<V extends Serializable> extends Simulator<V> {
 	private final Map<InputPortKey, Long> externalChannelClocks;
 
 	/**

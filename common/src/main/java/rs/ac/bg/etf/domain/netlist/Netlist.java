@@ -6,6 +6,8 @@ import rs.ac.bg.etf.domain.connection.Connection;
 import rs.ac.bg.etf.domain.connection.ConnectionAssembler;
 import rs.ac.bg.etf.domain.exceptions.*;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -22,7 +24,10 @@ import java.util.*;
  * @author stefanr
  * @since 1.0
  */
-public abstract class Netlist<V> {
+public abstract class Netlist<V extends Serializable> implements Serializable {
+	@Serial
+	private static final long serialVersionUID = 7L;
+
 	private final Map<ComponentId, Component<V>> components;
 	private final List<Connection> connections;
 
@@ -105,17 +110,17 @@ public abstract class Netlist<V> {
 	 *
 	 * @return one entry per component currently in this netlist, in no particular order
 	 */
-	public List<Pair<ComponentId, Optional<V>>> getState() {
+	public List<Pair<ComponentId, V>> getState() {
 		return components.entrySet().stream()
 				.map((e) ->
 						new Pair<>(
 								e.getKey(),
-								e.getValue().value()
+								e.getValue().value().orElse(null)
 						)
 				)
 				.toList();
 	}
-
+	
 	/**
 	 * Looks up every connection whose source is {@code id} — the set of downstream components this
 	 * component must notify when it produces a new output value.

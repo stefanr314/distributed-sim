@@ -4,6 +4,8 @@ import rs.ac.bg.etf.domain.connection.Connection;
 import rs.ac.bg.etf.domain.event.Event;
 import rs.ac.bg.etf.domain.exceptions.DelayNegativeException;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -37,7 +39,10 @@ import java.util.Optional;
  * @author stefanr
  * @since 1.0
  */
-public abstract class Component<V> {
+public abstract class Component<V extends Serializable> implements Serializable {
+	@Serial
+	private static final long serialVersionUID = 4L;
+
 	private final ComponentId componentId;
 	private final ComponentPort<V> inputPort;
 	private final ComponentPort<V> outputPort;

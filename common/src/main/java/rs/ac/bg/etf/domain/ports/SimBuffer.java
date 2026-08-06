@@ -3,6 +3,8 @@ package rs.ac.bg.etf.domain.ports;
 import rs.ac.bg.etf.domain.Simulator;
 import rs.ac.bg.etf.domain.event.Event;
 
+import java.io.Serializable;
+
 /**
  * Interface {@code SimBuffer<V>} is the sole channel of communication a {@link Simulator} has with the
  * outside world — other simulators, whether on the same workstation or across the network. A concrete
@@ -18,7 +20,7 @@ import rs.ac.bg.etf.domain.event.Event;
  * @author stefanr
  * @since 1.0
  */
-public interface SimBuffer<V> {
+public interface SimBuffer<V extends Serializable> {
 
 	/**
 	 * Delivers {@code event} to its {@link Event#destinationComponent()}.
