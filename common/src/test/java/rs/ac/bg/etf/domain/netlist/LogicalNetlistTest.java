@@ -9,7 +9,6 @@ import rs.ac.bg.etf.domain.exceptions.DuplicateConnectionOnSinglePortException;
 import rs.ac.bg.etf.domain.exceptions.InvalidIngoingConnectionException;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -96,10 +95,10 @@ class LogicalNetlistTest {
 	void getStateReturnsEmptyOptionalForComponentsThatHaveNotExecutedYet() {
 		netlist.addComponent(new String[]{"AND", "G1", "2", "5"});
 
-		List<Pair<ComponentId, Optional<Boolean>>> state = netlist.getState();
+		List<Pair<ComponentId, Boolean>> state = netlist.getState();
 
 		assertThat(state).hasSize(1);
 		assertThat(state.get(0).id()).isEqualTo(new ComponentId("G1"));
-		assertThat(state.get(0).value()).isEmpty();
+		assertThat(state.get(0).value()).isNull();
 	}
 }

@@ -5,11 +5,12 @@ import rs.ac.bg.etf.domain.connection.Connection;
 import rs.ac.bg.etf.domain.event.Event;
 import rs.ac.bg.etf.domain.exceptions.MisroutedEventException;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class DelayOnlyComponent<V> extends Component<V> {
+public class DelayOnlyComponent<V extends Serializable> extends Component<V> {
 	public DelayOnlyComponent(ComponentId componentId, ComponentPort<V> inputPort, ComponentPort<V> outputPort,
 	                          long delay) {
 		super(componentId, inputPort, outputPort, delay);

@@ -3,6 +3,8 @@ package rs.ac.bg.etf.domain.connection;
 import rs.ac.bg.etf.domain.component.ComponentId;
 import rs.ac.bg.etf.domain.exceptions.InvalidPortIndexValueException;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -14,7 +16,10 @@ import java.util.Objects;
  * @author stefanr
  * @since 1.0
  */
-public final class Connection {
+public final class Connection implements Serializable {
+	@Serial
+	private static final long serialVersionUID = 5L;
+
 	private final ComponentId sourceComponent;
 	private final ComponentId targetComponent;
 	private final int fromPort;

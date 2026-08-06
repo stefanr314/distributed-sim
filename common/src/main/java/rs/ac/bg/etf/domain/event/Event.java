@@ -3,6 +3,8 @@ package rs.ac.bg.etf.domain.event;
 import rs.ac.bg.etf.domain.component.ComponentId;
 import rs.ac.bg.etf.domain.exceptions.InvalidPortIndexValueException;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -15,7 +17,10 @@ import java.util.Objects;
  * @author stefanr
  * @since version 1.0
  */
-public final class Event<V> {
+public final class Event<V extends Serializable> implements Serializable {
+	@Serial
+	private static final long serialVersionUID = 6L;
+
 	private final ComponentId destinationComponent;
 	private final int atPort;
 	private final V value;

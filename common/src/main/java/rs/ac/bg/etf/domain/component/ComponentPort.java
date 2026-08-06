@@ -1,8 +1,12 @@
 package rs.ac.bg.etf.domain.component;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import rs.ac.bg.etf.domain.exceptions.InvalidNumberOfPortsException;
 import rs.ac.bg.etf.domain.exceptions.PortIndexOutOfBoundExcepton;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +20,10 @@ import java.util.Optional;
  * @author stefanr
  * @since 1.0
  */
-public class ComponentPort<V> {
+public class ComponentPort<V extends Serializable> implements Serializable {
+	@Serial
+	private final static long serialVersionUID = 3L;
+
 	private final int numberOfPorts;
 	private final List<ComponentPortValue<V>> portValues;
 
@@ -26,13 +33,14 @@ public class ComponentPort<V> {
 		this.portValues = initPortValues(numberOfPorts);
 	}
 
-	public static <V> ComponentPort<V> fromNumber(int numberOfPorts) {
+	public static <V extends Serializable> ComponentPort<V> fromNumber(int numberOfPorts) {
 		if (numberOfPorts < 1) throw new InvalidNumberOfPortsException();
 
 		return new ComponentPort<>(numberOfPorts);
 	}
 
-	public static <V> ComponentPort<V> singlePort() {
+	@Contract(" -> new")
+	public static <V extends Serializable> @NotNull ComponentPort<V> singlePort() {
 		return new ComponentPort<>(1);
 	}
 

@@ -1,7 +1,11 @@
 package rs.ac.bg.etf.domain.component;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import rs.ac.bg.etf.domain.exceptions.InvalidPortIndexValueException;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Optional;
 
 /**
@@ -17,10 +21,13 @@ import java.util.Optional;
  * @author stefanr
  * @since 1.0
  */
-public class ComponentPortValue<V> {
+public class ComponentPortValue<V extends Serializable> implements Serializable {
 	//TODO: optimize if needed
 //	private static final ComponentPortValue<?> NULL_AT_ZERO_PORT =
 //			new ComponentPortValue<>(null, 0);
+	@Serial
+	private final static long serialVersionUID = 2L;
+
 	private final int portIndex;
 	private final V value;
 
@@ -31,12 +38,14 @@ public class ComponentPortValue<V> {
 		this.portIndex = portIndex;
 	}
 
-	public static <V> ComponentPortValue<V> initValueAtPort(int atPort) {
+	@Contract("_ -> new")
+	public static <V extends Serializable> @NotNull ComponentPortValue<V> initValueAtPort(int atPort) {
 //		if (atPort == 0) return (ComponentPortValue<V>) NULL_AT_ZERO_PORT;
 		return new ComponentPortValue<>(null, atPort);
 	}
 
-	public static <V> ComponentPortValue<V> fromValueAtPort(V value, int atPort) {
+	@Contract("_, _ -> new")
+	public static <V extends Serializable> @NotNull ComponentPortValue<V> fromValueAtPort(V value, int atPort) {
 		return new ComponentPortValue<>(value, atPort);
 	}
 

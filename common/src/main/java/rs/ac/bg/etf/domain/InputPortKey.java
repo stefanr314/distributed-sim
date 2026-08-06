@@ -3,6 +3,8 @@ package rs.ac.bg.etf.domain;
 import rs.ac.bg.etf.domain.component.ComponentId;
 import rs.ac.bg.etf.domain.connection.Connection;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -14,14 +16,17 @@ import java.util.Objects;
  * @author stefanr
  * @since 1.0
  */
-public final class InputPortKey {
+public final class InputPortKey implements Serializable {
+	@Serial
+	private static final long serialVersionUID = 9L;
+	
 	private final ComponentId componentId;
 	private final int onPort;
 
 
 	public InputPortKey(ComponentId componentId, int onPort) {
 		Objects.requireNonNull(componentId);
-		
+
 		this.componentId = componentId;
 		this.onPort = onPort;
 	}
