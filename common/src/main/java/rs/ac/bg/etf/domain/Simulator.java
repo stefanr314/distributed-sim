@@ -3,6 +3,7 @@ package rs.ac.bg.etf.domain;
 import rs.ac.bg.etf.domain.component.Component;
 import rs.ac.bg.etf.domain.component.ComponentId;
 import rs.ac.bg.etf.domain.event.Event;
+import rs.ac.bg.etf.domain.exceptions.MisroutedEventDispatchException;
 import rs.ac.bg.etf.domain.netlist.Netlist;
 import rs.ac.bg.etf.domain.ports.SimBuffer;
 
@@ -23,7 +24,9 @@ import java.util.PriorityQueue;
  * is safe to process yet). Concrete subclasses — {@link ConservativeSimulator}, eventually an optimistic
  * counterpart — supply only the points where strategies genuinely differ: whether an event is currently
  * safe to process, what to do when a message arrives, what to do when a component produces no output,
- * and how termination and shutdown are decided.
+ * and how termination and shutdown are decided. The simulation is conducted in interval [0, simulationEndTime] and
+ * no special distributed termination detection algorithm is required. If this condition is not satisfied simulation
+ * will not perform correctly.
  * <p>
  * Not thread-safe by itself, and does not need to be: {@link #queue()} is touched exclusively by this
  * simulator's own thread inside {@link #simulate()}. Concurrent access from other simulators is confined
@@ -82,6 +85,7 @@ public abstract class Simulator<V extends Serializable> {
 			Event<V> event = queue.peek();
 
 			if (event == null || !safeToProceed(event)) {
+				reactToBlocking();
 				Event<V> incoming = buffer.receive();
 				onMessageArrived(incoming);
 				continue;
@@ -121,6 +125,9 @@ public abstract class Simulator<V extends Serializable> {
 		this.localClock = event.atDiscreteTimeMoment();
 		Component<V> receiver = netlist.components().get(event.destinationComponent());
 
+		if (receiver == null)
+			throw new MisroutedEventDispatchException(event.destinationComponent());
+
 		//reach the netlist and perform te execute on the appropriate component
 		List<Event<V>> produced = receiver.execute(event);
 
@@ -155,9 +162,18 @@ public abstract class Simulator<V extends Serializable> {
 	 * Routes a produced event to its destination: added to the local {@link #queue()} if the destination
 	 * is within this partition, otherwise handed to {@link #buffer()} for external delivery.
 	 *
+	 * <p>
+	 * If event occurs after the simulation end has been declared it will be ignored, as this only replicates the
+	 * true behaviour of ending the simulation. Contrary, even though the simulation end time is declared and
+	 * "reached" it will not trigger simulation termination since the queue will not be empty and the simulation
+	 * will proceed to perform the newly arrived event.
+	 * </p>
+	 *
 	 * @param product an event produced by a component's {@code execute}, to be delivered somewhere
 	 */
 	private void route(Event<V> product) {
+		if (product.atDiscreteTimeMoment() > simulationEndTime) return; //end reached
+
 		if (componentOfSimulator(product.destinationComponent())) {
 			queue.add(product);
 		} else {
@@ -171,7 +187,7 @@ public abstract class Simulator<V extends Serializable> {
 	 * optimistic implementations have no use for it.
 	 *
 	 * @param triggerEvent the event that was just processed with no resulting output
-	 * @param receiver     the component that processed it
+	 * @param receiver     the component that processes the event
 	 */
 	protected abstract void noValueMessageProduced(Event<V> triggerEvent, Component<V> receiver);
 
@@ -194,4 +210,12 @@ public abstract class Simulator<V extends Serializable> {
 	 * Called once {@link #isTerminated()}, to perform any subclass-specific shutdown notification.
 	 */
 	protected abstract void declareEnd();
+
+	/**
+	 * Method that can prevent deadlock in situations where two object partitional graphs refer to one another, and
+	 * none is reaching the time moment of actual event waiting in queue. This method enables simulation ratchet to
+	 * proceed.
+	 */
+	protected abstract void reactToBlocking();
+
 }
