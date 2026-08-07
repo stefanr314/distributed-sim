@@ -86,6 +86,12 @@ public class ConservativeSimulator<V extends Serializable> extends Simulator<V> 
 	 * both real and null messages, since either establishes a lower bound on that channel's next
 	 * message. Only real-valued events are additionally queued for processing.
 	 *
+	 * <p>
+	 * Instead of only putting the value in external channel clocks, firstly anticipate whether the event is
+	 * carrying older timestamp which break the invariant of constantly increasing time moments. On this basis
+	 * the distributed simulation rests.
+	 * </p>
+	 *
 	 * @throws MisroutedEventBufferReceiveException if {@code event} targets a port this simulator was
 	 *                                              never told to expect external input on
 	 */
@@ -100,7 +106,7 @@ public class ConservativeSimulator<V extends Serializable> extends Simulator<V> 
 		if (!externalChannelClocks.containsKey(inputPortKey))
 			throw new MisroutedEventBufferReceiveException(inputPortKey);
 
-		externalChannelClocks.put(inputPortKey, event.atDiscreteTimeMoment());
+		externalChannelClocks.merge(inputPortKey, event.atDiscreteTimeMoment(), Math::max);
 
 		//if value not null add it to the queue
 		if (event.value() != null)
@@ -125,6 +131,17 @@ public class ConservativeSimulator<V extends Serializable> extends Simulator<V> 
 		// broadcast null end time messages; inner null messages are not gonna be sent, check the method declaration
 		for (Component<V> component : netlist().components().values()) {
 			sendNullFromComponentWithClockValue(component, finalTime);
+		}
+	}
+
+	@Override
+	protected void reactToBlocking() {
+		var currentSafe = currentSafeTime();
+
+		if (currentSafe == Long.MAX_VALUE || currentSafe >= simulationEndTime()) return;
+
+		for (Component<V> component : netlist().components().values()) {
+			sendNullFromComponentWithClockValue(component, currentSafe + component.delay());
 		}
 	}
 

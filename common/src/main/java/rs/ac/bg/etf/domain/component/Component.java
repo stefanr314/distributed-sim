@@ -31,9 +31,10 @@ import java.util.Optional;
  * does not need to.
  * <p>
  * Subclasses supply the actual computation via {@link #execute(Event)}; this class deliberately knows
- * nothing about network transport, synchronization strategy (conservative vs. optimistic), or which of
+ * nothing about network transport, simulation strategy (conservative vs. optimistic), or which of
  * its connections are local versus external to the partition it happens to run in — those are the
- * responsibility of {@code Netlist} and {@code Simulator} respectively.
+ * responsibility of {@code Netlist} and {@code Simulator} respectively. Components without a delay are not supported
+ * in distributed systems and can produce deadlocks.
  *
  * @param <V> type parameter of component's value
  * @author stefanr
@@ -49,9 +50,16 @@ public abstract class Component<V extends Serializable> implements Serializable 
 	private final long delay;
 	private final List<Connection> outgoing = new ArrayList<>();
 
-
+	/**
+	 *
+	 * @param componentId - id/name of component
+	 * @param inputPort   - component port resembling the input port numbers and values present at them
+	 * @param outputPort  - component port resembling the output port numbers and values present at them
+	 * @param delay       - delay equal to zero cannot be accepted since it will result in false promise of clock's
+	 *                    time advancement at the begging of simulation leading to the deadlock.
+	 */
 	protected Component(ComponentId componentId, ComponentPort<V> inputPort, ComponentPort<V> outputPort, long delay) {
-		if (delay < 0) throw new DelayNegativeException();
+		if (delay <= 0) throw new DelayNegativeException();
 
 		this.componentId = Objects.requireNonNull(componentId);
 		this.inputPort = Objects.requireNonNull(inputPort);
